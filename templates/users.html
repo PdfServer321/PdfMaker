@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/panel">Back to panel</a><hr>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>username</th>
+                <th>status</th>
+              </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{user[0]}}</td>
+                    <td>{{user[2]}}</td>
+                    <td>{{user[3]}}</td>
+                    {% if user[3] == 'user' %}
+                        <td><button><a href="/status?id={{user[0]}}&type=admin">Change status</a></button></td>
+                    {% elif user[3] == 'admin' %}
+                        <td><button><a href="/status?id={{user[0]}}&type=user">Change status</a></button></td>
+                    {% else %}
+                        <td><button disabled>Can't change</td>
+                    {% endif %}
+                    <td><button><a href="/delete?id={{user[0]}}">Delete</a></button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

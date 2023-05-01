@@ -44,14 +44,14 @@ def login():
     password = request.form["password"]
     token = get_token(username, password)
     if database.is_token_valid(cursor, token): return set_cookie(token)
-    else: return redirect(url_for(".main", error_msg="Username or password is incorrect"))
+    else: return redirect(url_for(".main", error_msg="Неверное имя пользователя или пароль"))
 
 @app.route('/panel')
 def panel():
     token = request.cookies.get('token')
     if check_cookie(): 
         if database.is_user_types(cursor, token, "('admin', 'superadmin')"): return render_template("panel.html")
-        else: return redirect(url_for(".test"))
+        else: return redirect(url_for(".auto"))
     else: return redirect(url_for(".main"))
 
 @app.route('/logout')
@@ -67,7 +67,7 @@ def users():
         if database.is_user_types(cursor, token, "('admin', 'superadmin')"): 
             users = database.get_users(cursor)
             return render_template("users.html", users=users)
-        else: return redirect(url_for(".test"))
+        else: return redirect(url_for(".auto"))
     else: return redirect(url_for(".main"))
 
 @app.route('/status')
@@ -79,7 +79,7 @@ def status():
             type = request.args.get("type")
             database.change_user_status(connection, cursor, id, type)
             return redirect(url_for(".users"))
-        else: return redirect(url_for(".test"))
+        else: return redirect(url_for(".auto"))
     else: return redirect(url_for(".main"))
 
 @app.route('/delete')
@@ -90,7 +90,7 @@ def delete():
             id = request.args.get("id")
             database.delete_user(connection, cursor, id)
             return redirect(url_for(".users"))
-        else: return redirect(url_for(".test"))
+        else: return redirect(url_for(".auto"))
     else: return redirect(url_for(".main"))
 
 @app.route('/add')
@@ -105,16 +105,17 @@ def add():
 
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
+    token = request.cookies.get('token')
     if check_cookie():
         if database.is_user_types(cursor, token, "('admin', 'superadmin')"): 
             username = request.form["username"]
             password = request.form["password"]
             status = request.form["status"]
             token = get_token(username, password)
-            if database.is_user_exist(cursor, username): return redirect(url_for(".add", error_msg="User with this login already exist"))
+            if database.is_user_exist(cursor, username): return redirect(url_for(".add", error_msg="Пользователь с таким логином уже существует"))
             else:
                 database.add_user(connection, cursor, username, token, status) 
-                return redirect(url_for(".add", error_msg="User added successfully"))
+                return redirect(url_for(".add", error_msg="Пользователь успешно добавлен"))
     else: return redirect(url_for(".main"))
 
 if __name__ == '__main__':

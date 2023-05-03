@@ -26,9 +26,9 @@ def auto():
     if check_cookie(): return render_template("auto.html")
     else: return redirect(url_for(".main"))
 
-@app.route('/contianers')
-def contianers():
-    if check_cookie(): return render_template("contianers.html")
+@app.route('/containers')
+def containers():
+    if check_cookie(): return render_template("containers.html")
     else: return redirect(url_for(".main"))
 
 @app.route('/')
